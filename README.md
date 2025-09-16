@@ -1,11 +1,11 @@
 
-# 📨 Clasificador de SPAM (TF‑IDF + Naive Bayes) con MLflow
+# Clasificador de SPAM (TF‑IDF + Naive Bayes) con MLflow
 
 Este proyecto entrena y prueba un **clasificador de SPAM** usando **TF‑IDF** + **Multinomial Naive Bayes**, registrando **métricas, artefactos y el modelo** en **MLflow**. Incluye un cuaderno de entrenamiento y un cuaderno para pruebas rápidas del modelo.
 
 ---
 
-## 📦 Contenidos del repo (archivos provistos)
+## Contenidos del repo (archivos provistos)
 
 - `spam_dataset.csv` → dataset con **1000 filas** y **2 columnas**:
   - `message_content` *(texto)*: contenido del mensaje.
@@ -17,7 +17,7 @@ Este proyecto entrena y prueba un **clasificador de SPAM** usando **TF‑IDF** +
 
 ---
 
-## 🛠 Requisitos
+## Requisitos
 
 - Python 3.9+ (recomendado)
 - Librerías: `mlflow`, `scikit-learn`, `pandas`, `numpy`, `matplotlib`
@@ -30,7 +30,7 @@ pip install mlflow scikit-learn pandas numpy matplotlib
 
 ---
 
-## 🚀 Flujo de trabajo
+## Flujo de trabajo
 
 1) **Entrenamiento** (en `spam_classifier_mlflow.ipynb`)
    - Carga y limpieza del dataset `spam_dataset.csv`.
@@ -50,12 +50,12 @@ pip install mlflow scikit-learn pandas numpy matplotlib
 
 ---
 
-## ▶️ Cómo entrenar y registrar en MLflow
+## Cómo entrenar y registrar en MLflow
 
 Abrí `spam_classifier_mlflow.ipynb` y ejecutá las celdas. Asegurate de que el logging de MLflow apunte a donde querés (por defecto, `mlruns` local).  
 En el notebook se loguea el modelo bajo un subpath (típicamente `model`).
 
-**Estructura de artefactos** (típica):
+**Estructura de artefactos**:
 ```
 mlruns/
  └─ <experiment_id>/
@@ -65,33 +65,11 @@ mlruns/
          └─ params/metrics/...
 ```
 
----
 
-## 🧪 Cómo probar el modelo (notebook listo)
-
-Usá `test_mlflow_model.ipynb`. Podés setear variables de entorno para personalizar:
-
-- `MLFLOW_RUN_ID` → si querés cargar un run específico.
-- `MLFLOW_EXPERIMENT_NAME` → por defecto `"Default"`.
-- `MLFLOW_MODEL_SUBPATH` → por defecto `"model"`.
-- `INPUT_COLUMN_NAME` → por defecto `"text"`, **cambialo a** `"message_content"` para este dataset.
-- `TEST_CSV_PATH` → ruta a `test.csv` (si querés evaluar).
-
-Ejemplo al ejecutar localmente (Linux/macOS):
-```bash
-export INPUT_COLUMN_NAME=message_content
-jupyter lab  # o jupyter notebook
-```
-
-En Windows (PowerShell):
-```powershell
-$env:INPUT_COLUMN_NAME="message_content"
-jupyter lab
-```
 
 ---
 
-## 🌐 Servir el modelo como API local
+## Servir el modelo como API local
 
 1) Identificá tu `MODEL_URI` (el notebook de pruebas lo imprime, suele ser `runs:/<RUN_ID>/model`).  
 2) Levantá el servidor:
@@ -115,59 +93,6 @@ La respuesta será algo como:
 ```json
 {"predictions":[1,0]}
 ```
-(donde 1 = SPAM, 0 = no SPAM, si usaste esa codificación).
-
----
-
-## 📚 Sugerencias de evaluación
-
-- **Métricas**: `f1`, `precision`, `recall`, `accuracy`. Para datasets desbalanceados, priorizá `f1`/`recall`.
-- **Matriz de confusión**: para visualizar falsos positivos/negativos.
-- **Curva Precision‑Recall**: útil si el umbral de decisión es relevante para tu caso de negocio.
-
----
-
-## 🧩 Estructura mínima sugerida
+( 1 = SPAM, 0 = no SPAM, si usaste esa codificación).
 
 ```
-.
-├─ data/
-│  └─ spam_dataset.csv
-├─ notebooks/
-│  ├─ spam_classifier_mlflow.ipynb
-│  └─ test_mlflow_model.ipynb
-├─ mlruns/              # (se crea al entrenar)
-└─ README.md
-```
-
----
-
-## ❗️Problemas comunes
-
-- **Versiones de librerías**: si al cargar falla, replicá el entorno del modelo (ver `conda.yaml`/`requirements.txt` en `artifacts/model`).  
-- **Nombre de columna**: el pipeline espera una columna específica (aquí `message_content`). Si mandás `text`, fallará o predecirá mal.  
-- **Vectorizador**: asegurate de haber logueado el **pipeline completo** (TF‑IDF + clasificador). Si logueás solo el clasificador, `predict` fallará.  
-- **Dataset desbalanceado**: considerá `class_weight`, `threshold tuning` o **resampling**.
-
----
-
-## 🔒 (Opcional) Registrar en Model Registry
-
-Si usás el Registry, podés cargar por nombre y etapa:
-```python
-import mlflow
-model = mlflow.pyfunc.load_model("models:/spam-classifier/Production")
-```
-
----
-
-## 📄 Licencia
-
-MIT (o la que elijas).
-
----
-
-## 👋 Contacto / mantenimiento
-
-- Autor: Diego (ajustar si corresponde).
-- PRs y mejoras bienvenidas.
